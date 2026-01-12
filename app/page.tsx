@@ -20,7 +20,7 @@ import { DonationStats } from "@/components/donation-stats"
 import { ThankYouNote } from "@/components/thank-you-note"
 import { GalleryModal } from "@/components/gallery-modal"
 
-const HERO_IMAGE = "/images/whatsapp-20image-202026-01-12-20at-202.jpeg"
+const HERO_IMAGE = "/images/download.jpeg"
 
 interface Donation {
   id: string
