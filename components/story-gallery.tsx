@@ -20,7 +20,7 @@ const GALLERY_ITEMS: GalleryItem[] = [
       "The original temple structure that has served devotees for over 50 years. Built with devotion by our ancestors, this sacred shrine now awaits its transformation into a grand temple.",
   },
   {
-    src: "/images/whatsapp-20image-202026-01-09-20at-202.jpeg",
+    src: "/images/7.jpeg",
     alt: "Construction Progress",
     title: "Rising with Blessings",
     description:
