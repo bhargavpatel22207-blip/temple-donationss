@@ -22,7 +22,9 @@ interface RecentDonationsProps {
 export function RecentDonations({ onNewDonation }: RecentDonationsProps) {
   const [donations, setDonations] = useState<Donation[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>()
+  const { ref, isVisible, reset } = useScrollAnimation<HTMLDivElement>()
+  console.log("DONATIONS:", donations)
+
 
   useEffect(() => {
     const fetchDonations = async () => {
@@ -31,11 +33,11 @@ export function RecentDonations({ onNewDonation }: RecentDonationsProps) {
         .from("donations")
         .select("*")
         .order("created_at", { ascending: false })
-        .limit(10)
+        .limit(20)
+if (!error && data) {
+  setDonations(data)
+}
 
-      if (!error && data) {
-        setDonations(data)
-      }
       setIsLoading(false)
     }
 
@@ -47,7 +49,7 @@ export function RecentDonations({ onNewDonation }: RecentDonationsProps) {
       .channel("donations")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "donations" }, (payload) => {
         const newDonation = payload.new as Donation
-        setDonations((prev) => [newDonation, ...prev.slice(0, 9)])
+        setDonations((prev) => [newDonation, ...prev.slice(0, 19)])
         onNewDonation?.(newDonation)
       })
       .subscribe()
@@ -57,21 +59,19 @@ export function RecentDonations({ onNewDonation }: RecentDonationsProps) {
     }
   }, [onNewDonation])
 
-  const formatTimeAgo = (dateString: string) => {
-    const date = new Date(dateString)
-    const now = new Date()
-    const diffMs = now.getTime() - date.getTime()
-    const diffMins = Math.floor(diffMs / 60000)
-    const diffHours = Math.floor(diffMs / 3600000)
-    const diffDays = Math.floor(diffMs / 86400000)
-
-    if (diffMins < 1) return "Just now"
-    if (diffMins < 60) return `${diffMins}m ago`
-    if (diffHours < 24) return `${diffHours}h ago`
-    return `${diffDays}d ago`
-  }
-
-  if (isLoading) {
+const formatDateTime = (dateString: string) => {
+  const date = new Date(dateString)
+ return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }) + " · " + date.toLocaleTimeString("en-IN", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  })
+}
+ if (isLoading) {
     return (
       <div className="space-y-3">
         {[...Array(3)].map((_, i) => (
@@ -98,10 +98,8 @@ export function RecentDonations({ onNewDonation }: RecentDonationsProps) {
       {donations.map((donation, index) => (
         <div
           key={donation.id}
-          className={cn(
-            "rounded-lg bg-secondary/50 border border-border p-4 transition-all hover:bg-secondary",
-            isVisible ? "animate-fade-in-up" : "opacity-0",
-          )}
+          className="rounded-lg bg-secondary/50 border border-border p-4 transition-all hover:bg-secondary"
+
           style={{ animationDelay: `${index * 100}ms` }}
         >
           <div className="flex items-center justify-between mb-1">
@@ -113,9 +111,12 @@ export function RecentDonations({ onNewDonation }: RecentDonationsProps) {
           {donation.message && (
             <p className="text-sm text-muted-foreground mb-1 line-clamp-2">{`"${donation.message}"`}</p>
           )}
-          <p className="text-xs text-muted-foreground">{formatTimeAgo(donation.created_at)}</p>
+  <p className="text-xs text-muted-foreground">
+  {formatDateTime(donation.created_at)}
+</p>
         </div>
       ))}
     </div>
   )
 }
+
