@@ -16,22 +16,48 @@ interface Donation {
 export function TopDonors() {
   const [topDonors, setTopDonors] = useState<Donation[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>()
+  const { ref, isVisible, reset } = useScrollAnimation<HTMLDivElement>()
+
 
   useEffect(() => {
-    const fetchTopDonors = async () => {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from("donations")
-        .select("*")
-        .order("amount", { ascending: false })
-        .limit(3)
+  const fetchTopDonors = async () => {
+  const supabase = createClient()
 
-      if (!error && data) {
-        setTopDonors(data)
-      }
-      setIsLoading(false)
+  const { data, error } = await supabase
+    .from("donations")
+    .select("donor_name, amount, is_anonymous")
+
+  if (error || !data) {
+    setIsLoading(false)
+    return
+  }
+
+  // ✅ Aggregate donations per donor
+  const map = new Map<string, Donation>()
+
+  for (const d of data) {
+    const key = d.is_anonymous ? "Anonymous" : d.donor_name
+
+    if (!map.has(key)) {
+      map.set(key, {
+        id: key, // safe virtual id
+        donor_name: key,
+        amount: d.amount,
+        is_anonymous: d.is_anonymous,
+      })
+    } else {
+      map.get(key)!.amount += d.amount
     }
+  }
+
+  const sorted = Array.from(map.values())
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, 3)
+
+  setTopDonors(sorted)
+  setIsLoading(false)
+}
+
 
     fetchTopDonors()
 
@@ -85,11 +111,11 @@ export function TopDonors() {
       {topDonors.map((donor, index) => (
         <div
           key={donor.id}
-          className={cn(
-            "relative rounded-xl border bg-gradient-to-br p-6 transition-all hover:scale-105",
-            rankColors[index] || "from-secondary to-secondary border-border",
-            isVisible ? "animate-pop-in" : "opacity-0",
-          )}
+         className={cn(
+  "relative rounded-xl border bg-gradient-to-br p-6 transition-all hover:scale-105 animate-pop-in",
+  rankColors[index] || "from-secondary to-secondary border-border",
+)}
+
           style={{ animationDelay: `${index * 150}ms` }}
         >
           <div className="absolute top-4 right-4">{rankIcons[index]}</div>
