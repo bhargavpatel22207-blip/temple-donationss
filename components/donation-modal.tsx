@@ -1,18 +1,14 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import {
   X,
   Heart,
-  CheckCircle,
   ArrowRight,
   ArrowLeft,
   User,
   Phone,
   Mail,
-  Gift,
-  Copy,
-  Check,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -51,26 +47,59 @@ export function DonationModal({ isOpen, onClose }: DonationModalProps) {
   }, [isOpen])
 
   const validateStep2 = () => {
-    if (!donorName.trim()) return false
-    return true
+    return donorName.trim().length > 0
   }
 
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
         onClick={onClose}
       />
 
+      {/* Modal */}
       <div className="relative w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+        {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary"
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary z-20"
         >
           <X className="h-5 w-5" />
         </button>
+
+        {/* ================= QR OVERLAY (FIXED) ================= */}
+        {showQR && (
+          <div className="absolute inset-0 z-50 bg-background/90 backdrop-blur-sm flex items-center justify-center">
+            <div className="relative bg-card border border-border rounded-2xl p-6 w-full max-w-sm text-center">
+
+              <button
+                onClick={() => setShowQR(false)}
+                className="absolute top-3 right-3 p-2 rounded-full hover:bg-secondary"
+                aria-label="Close QR"
+              >
+                <X className="h-5 w-5 text-muted-foreground" />
+              </button>
+
+              <p className="text-sm text-muted-foreground mb-4">
+                Open your UPI app and make the payment by scanning this QR
+              </p>
+
+              <img
+                src="/1.jpeg"
+                alt="UPI QR Code"
+                className="mx-auto rounded-lg"
+              />
+
+              <p className="mt-4 text-xs text-muted-foreground">
+                After successful payment, we will update the website shortly.
+              </p>
+            </div>
+          </div>
+        )}
+        {/* ======================================================= */}
 
         {/* Header */}
         <div className="p-6 border-b border-border text-center">
@@ -143,16 +172,14 @@ export function DonationModal({ isOpen, onClose }: DonationModalProps) {
                 Receiver Name (as shown in PhonePe):{" "}
                 <span className="font-semibold">PATIL NAVEEN KUMAR</span>
               </p>
-              <p className="mt-4 text-sm text-destructive text-center">
-                If your payment is successful, your bank account name will appear in the Recent Donations section. Your donor name will be verified and updated on the website within a short span of time.
+
+              <p className="mt-3 text-sm text-destructive text-center">
+                If your payment is successful, your bank account name may appear
+                temporarily. Your donor name will be updated shortly after verification.
               </p>
 
               <div className="flex gap-3 mt-6">
-                <Button
-                  variant="outline"
-                  onClick={() => setStep(1)}
-                  className="flex-1"
-                >
+                <Button variant="outline" onClick={() => setStep(1)} className="flex-1">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back
                 </Button>
@@ -167,24 +194,6 @@ export function DonationModal({ isOpen, onClose }: DonationModalProps) {
                   Pay Rs.{amount.toLocaleString()}
                 </GlowingButton>
               </div>
-
-              {showQR && (
-                <div className="mt-6 text-center">
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Open your UPI app and make the payment by scanning this QR
-                  </p>
-
-                  <img
-                    src="/1.jpeg"
-                    alt="UPI QR Code"
-                    className="mx-auto rounded-lg"
-                  />
-
-                  <p className="mt-3 text-xs text-muted-foreground">
-                    After successful payment, we will update the website shortly.
-                  </p>
-                </div>
-              )}
             </>
           )}
         </div>
@@ -192,6 +201,7 @@ export function DonationModal({ isOpen, onClose }: DonationModalProps) {
     </div>
   )
 }
+
 
 
 
