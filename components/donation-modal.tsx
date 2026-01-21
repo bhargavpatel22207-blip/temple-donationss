@@ -67,7 +67,7 @@ interface DonationModalProps {
 }
 
 const PRESET_AMOUNTS = [500, 1000, 5000, 10000]
-const UPI_ID = "9441424659-5@ybl" // replace with your real UPI ID
+const UPI_ID = "8019710973@ibl" // replace with your real UPI ID
 const PAYEE_NAME = encodeURIComponent("tatpally hanuman madir")
 
 function generateToken(): string {
