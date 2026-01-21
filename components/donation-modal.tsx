@@ -174,8 +174,8 @@ export function DonationModal({ isOpen, onClose }: DonationModalProps) {
               </p>
 
               <p className="mt-3 text-sm text-destructive text-center">
-                If your payment is successful, your bank account name may appear
-                temporarily. Your donor name will be updated shortly after verification.
+              If your payment is successful, your bank account name will appear in the Recent Donations section. 
+              Your donor name will be verified and updated on the website within a short span of time.
               </p>
 
               <div className="flex gap-3 mt-6">
