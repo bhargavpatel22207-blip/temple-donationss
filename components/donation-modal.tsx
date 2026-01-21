@@ -184,7 +184,7 @@ export function DonationModal({ isOpen, onClose, onSuccess }: DonationModalProps
 const handleSubmit = async () => {
   if (!validateStep2()) return
 
-  const proceed = window.confirm(s
+  const proceed = window.confirm(
     "Receiver Name (as shown in PhonePe): " + RECEIVER_NAME + "\n\n" +
     "If your payment is successful, we will update it in the website in a short span of time.\n\n" +
     "IMPORTANT:\n" +
