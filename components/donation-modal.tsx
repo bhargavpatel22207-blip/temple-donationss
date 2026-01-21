@@ -67,7 +67,7 @@ interface DonationModalProps {
 }
 
 const PRESET_AMOUNTS = [500, 1000, 5000, 10000]
-const UPI_ID = "8019710973@ibl" // replace with your real UPI ID
+const UPI_ID = "9441424659-5@ybl" // replace with your real UPI ID
 const PAYEE_NAME = encodeURIComponent("tatpally hanuman madir")
 
 function generateToken(): string {
@@ -79,7 +79,14 @@ function generateToken(): string {
   return token
 }
 function openUPI(amount: number) {
-  const link = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${amount}&cu=INR`
+  const TRANSACTION_NOTE = encodeURIComponent("Tatpally Hanuman Temple Donation")
+  const link =
+    `upi://pay?pa=${UPI_ID}` +
+    `&pn=${PAYEE_NAME}` +
+    `&am=${amount}` +
+    `&cu=INR` +
+    `&tn=${TRANSACTION_NOTE}`
+
   window.location.href = link
 }
 
@@ -172,7 +179,7 @@ export function DonationModal({ isOpen, onClose, onSuccess }: DonationModalProps
     }
   }
 
-  const RECEIVER_NAME = "PATEL BHARGAVA" // must match PhonePe exactly
+  const RECEIVER_NAME = "PATIL NAVEEN KUMAR" // must match PhonePe exactly
 
 const handleSubmit = async () => {
   if (!validateStep2()) return
@@ -430,7 +437,7 @@ const handleSubmit = async () => {
                     {errors.submit && <p className="mt-4 text-sm text-destructive text-center">{errors.submit}</p>}
                     <p className="mt-3 text-center text-sm text-destructive">
   Receiver Name (as shown in PhonePe):{" "}
-  <span className="font-semibold">PATEL BHARGAVA</span>
+  <span className="font-semibold">PATIL NAVEEN KUMAR</span>
 </p>
 <p className="mt-1 text-center text-xs text-destructive">
   Please confirm this name in PhonePe before entering your UPI PIN.
